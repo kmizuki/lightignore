@@ -2,6 +2,10 @@
 
 Lightning-fast, interactive .gitignore generator
 
+<p align="left">
+  <img src="sample.png" alt="lightignore demo" width="50%">
+</p>
+
 ## Features
 
 - 📦 Automatically fetches official gitignore templates from GitHub
