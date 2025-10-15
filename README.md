@@ -14,7 +14,7 @@ Lightning-fast, interactive .gitignore generator
 ### Using curl (Recommended)
 
 ```bash
-curl -LsSf https://github.com/kmizuki/lightignore/releases/latest/download/lightignore-installer.sh | sh
+curl -LsSf https://github.com/kmizuki/lightignore/releases/download/0.1.0/lightignore-installer.sh | sh
 ```
 
 ### Using cargo
