@@ -1,0 +1,31 @@
+[package]
+name = "lightignore"
+version = "0.1.0"
+edition = "2024"
+authors = ["kmizuki"]
+license = "MIT OR Apache-2.0"
+description = "Interactive gitignore generator with beautiful TUI"
+repository = "https://github.com/kmizuki/lightignore"
+homepage = "https://github.com/kmizuki/lightignore"
+readme = "README.md"
+keywords = ["gitignore", "git", "cli", "tui"]
+categories = ["command-line-utilities", "development-tools"]
+
+[[bin]]
+name = "lignore"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1"
+clap = { version = "4", features = ["derive"] }
+reqwest = { version = "0.12", features = ["json", "gzip"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+dirs = "6"
+crossterm = "0.29"
+
+# The profile that 'dist' will build with
+[profile.dist]
+inherits = "release"
+lto = "thin"

@@ -1,0 +1,18 @@
+{
+  "templates": [
+    "Rust",
+    "VisualStudioCode",
+    "Windows",
+    "macOS"
+  ],
+  "custom": {
+    "certificates": [
+      "*.pem",
+      "*.key",
+      "*.crt",
+      "*.cer",
+      "*.der",
+      "*.priv"
+    ]
+  }
+}
