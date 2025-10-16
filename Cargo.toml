@@ -1,9 +1,9 @@
 [package]
 name = "lightignore"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 authors = ["kmizuki"]
-license = "MIT OR Apache-2.0"
+license = "MIT"
 description = "Interactive gitignore generator with beautiful TUI"
 repository = "https://github.com/kmizuki/lightignore"
 homepage = "https://github.com/kmizuki/lightignore"
