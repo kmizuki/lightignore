@@ -3,12 +3,15 @@ use crossterm::{
     QueueableCommand,
     style::{Color, Print, ResetColor, SetForegroundColor},
 };
+use futures::stream::{self, StreamExt};
 use reqwest::Client;
 use std::fs;
 use std::future::Future;
 use std::io::{self, Write};
 use std::path::PathBuf;
 use std::pin::Pin;
+use std::sync::Arc;
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use crate::config::{
@@ -125,21 +128,63 @@ impl App {
     pub async fn update_cache(&self) -> Result<TemplateIndex> {
         self.ensure_cache_dir()?;
 
-        let mut index = TemplateIndex::new();
+        // Phase 1: Collect all template URLs
+        println!("Scanning gitignore repository...");
+        let templates = self.collect_templates_recursive("").await?;
 
-        self.fetch_templates_recursive("", &mut index).await?;
+        println!("Found {} templates. Downloading...", templates.len());
+
+        // Phase 2: Download templates in parallel with progress tracking
+        let counter = Arc::new(AtomicUsize::new(0));
+        let total = templates.len();
+
+        let results = stream::iter(templates)
+            .map(|(key, name, download_url)| {
+                let counter = Arc::clone(&counter);
+                async move {
+                    let result = self.download_template(&key, &download_url).await;
+                    let current = counter.fetch_add(1, Ordering::SeqCst) + 1;
+
+                    // Print progress every 10 templates or on the last one
+                    if current % 10 == 0 || current == total {
+                        print!("\rDownloaded {}/{} templates", current, total);
+                        let _ = io::stdout().flush();
+                    }
+
+                    result.map(|path| (name, path))
+                }
+            })
+            .buffer_unordered(20) // Download 20 templates concurrently
+            .collect::<Vec<_>>()
+            .await;
+
+        println!(); // New line after progress
+
+        // Build index from results
+        let mut index = TemplateIndex::new();
+        for result in results {
+            match result {
+                Ok((name, path)) => {
+                    index.insert(name, path.to_string_lossy().to_string());
+                }
+                Err(e) => {
+                    eprintln!("Warning: Failed to download template: {}", e);
+                }
+            }
+        }
 
         index.write(&self.cache_dir)?;
         Ok(index)
     }
 
-    fn fetch_templates_recursive<'a>(
+    // Collect all template information without downloading
+    fn collect_templates_recursive<'a>(
         &'a self,
         path: &'a str,
-        index: &'a mut TemplateIndex,
-    ) -> Pin<Box<dyn Future<Output = Result<()>> + 'a>> {
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<(String, String, String)>>> + 'a>> {
         Box::pin(async move {
             let contents = self.fetch_repo_tree(path).await?;
+            let mut templates = Vec::new();
 
             for entry in contents {
                 if entry.content_type == "file" && entry.name.ends_with(".gitignore") {
@@ -151,15 +196,15 @@ impl App {
                         } else {
                             format!("{}/{}", path, name)
                         };
-                        let cached_path = self.download_template(&cache_key, &download_url).await?;
-                        index.insert(name, cached_path.to_string_lossy().to_string());
+                        templates.push((cache_key, name, download_url));
                     }
                 } else if entry.content_type == "dir" {
-                    self.fetch_templates_recursive(&entry.path, index).await?;
+                    let mut sub_templates = self.collect_templates_recursive(&entry.path).await?;
+                    templates.append(&mut sub_templates);
                 }
             }
 
-            Ok(())
+            Ok(templates)
         })
     }
 

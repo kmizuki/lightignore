@@ -25,6 +25,7 @@ tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 dirs = "6"
 crossterm = "0.29"
 self_update = { version = "0.42", features = ["archive-tar", "compression-flate2"] }
+futures = "0.3"
 
 # The profile that 'dist' will build with
 [profile.dist]
