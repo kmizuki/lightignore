@@ -28,4 +28,6 @@ pub enum Commands {
         #[arg(short, long)]
         output: Option<PathBuf>,
     },
+    /// Update lightignore to the latest version
+    SelfUpdate,
 }

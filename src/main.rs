@@ -2,6 +2,7 @@ mod app;
 mod cli;
 mod config;
 mod gitignore;
+mod self_updater;
 mod template;
 mod ui;
 mod validation;
@@ -37,6 +38,9 @@ fn main() -> Result<()> {
             let index = app.read_index()?;
             let output_path = output.unwrap_or_else(|| PathBuf::from(".gitignore"));
             app.generate_interactive(&index, output_path)?;
+        }
+        Commands::SelfUpdate => {
+            self_updater::update()?;
         }
     }
 

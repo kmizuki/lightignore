@@ -21,12 +21,6 @@ Lightning-fast, interactive .gitignore generator
 curl -LsSf https://github.com/kmizuki/lightignore/releases/download/0.1.0/lightignore-installer.sh | sh
 ```
 
-### Using cargo
-
-```bash
-cargo install lightignore
-```
-
 ### From source
 
 ```bash
@@ -36,18 +30,6 @@ cargo install --path .
 ```
 
 ## Usage
-
-### Update template cache
-
-```bash
-lignore update
-```
-
-### List available templates
-
-```bash
-lignore list
-```
 
 ### Generate .gitignore file
 
@@ -63,17 +45,22 @@ lignore
 lignore generate -o .gitignore
 ```
 
-## Custom Templates
+### List available templates
 
-You can define custom templates in `lignore.json`:
+```bash
+lignore list
+```
 
-```json
-{
-  "templates": ["Rust", "Node"],
-  "custom": {
-    "MyProject": ["# My custom patterns", "*.local", ".env", "secrets/"]
-  }
-}
+### Update template cache
+
+```bash
+lignore update
+```
+
+### Update lightignore itself
+
+```bash
+lignore self-update
 ```
 
 ## Keyboard Shortcuts
@@ -86,6 +73,19 @@ You can define custom templates in `lignore.json`:
 - `Home`/`End` - Jump to start/end
 - `Ctrl+A` - Select all
 - `Ctrl+U` - Clear all
+
+## Custom Templates
+
+You can define custom templates in `lignore.json`:
+
+```json
+{
+  "templates": ["Rust", "Node"],
+  "custom": {
+    "MyProject": ["# My custom patterns", "*.local", ".env", "secrets/"]
+  }
+}
+```
 
 ## Contributing
 
