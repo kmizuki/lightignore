@@ -1,7 +1,8 @@
+use crate::ui::theme::get_theme;
 use anyhow::{Context, Result};
 use crossterm::{
     QueueableCommand,
-    style::{Color, Print, ResetColor, SetForegroundColor},
+    style::{Print, ResetColor, SetForegroundColor},
 };
 use futures::stream::{self, StreamExt};
 use reqwest::Client;
@@ -93,11 +94,12 @@ impl App {
     async fn display_rate_limit_info(&self) {
         if let Ok(rate_limit) = self.fetch_rate_limit_info().await {
             let mut stdout = io::stdout();
-            let _ = stdout.queue(SetForegroundColor(Color::Yellow));
+            let theme = get_theme();
+            let _ = stdout.queue(SetForegroundColor(theme.header_title));
             let _ = stdout.queue(Print("\nRate Limit Information:\n"));
             let _ = stdout.queue(ResetColor);
 
-            let _ = stdout.queue(SetForegroundColor(Color::Cyan));
+            let _ = stdout.queue(SetForegroundColor(theme.accent));
             let _ = stdout.queue(Print(format!("  Limit:     {}\n", rate_limit.limit)));
             let _ = stdout.queue(Print(format!("  Remaining: {}\n", rate_limit.remaining)));
 

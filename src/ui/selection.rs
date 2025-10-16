@@ -1,10 +1,11 @@
+use crate::ui::theme::get_theme;
 use anyhow::Result;
 use crossterm::{
     ExecutableCommand, QueueableCommand,
     cursor::{Hide, MoveTo, Show},
     event::{self, Event, KeyCode, KeyEventKind, KeyModifiers},
     execute,
-    style::{Attribute, Color, Print, ResetColor, SetAttribute, SetForegroundColor},
+    style::{Attribute, Print, ResetColor, SetAttribute, SetForegroundColor},
     terminal::{self, Clear, ClearType, EnterAlternateScreen, LeaveAlternateScreen},
 };
 use std::cmp::{max, min};
@@ -269,11 +270,12 @@ impl SelectionState {
     fn render_header(&self, stdout: &mut Stdout) -> Result<()> {
         stdout.queue(MoveTo(0, 0))?;
         stdout.queue(SetAttribute(Attribute::Reset))?;
-        stdout.queue(SetForegroundColor(Color::Yellow))?;
+        let theme = get_theme();
+        stdout.queue(SetForegroundColor(theme.header_title))?;
         stdout.queue(SetAttribute(Attribute::Bold))?;
         stdout.queue(Print("Select templates  "))?;
         stdout.queue(SetAttribute(Attribute::Reset))?;
-        stdout.queue(SetForegroundColor(Color::DarkGrey))?;
+        stdout.queue(SetForegroundColor(theme.header_hint))?;
         stdout.queue(Print(
             "Space=toggle  Enter=confirm  Esc=cancel  Ctrl+A=all  Ctrl+U=clear",
         ))?;
@@ -306,21 +308,26 @@ impl SelectionState {
         if is_cursor {
             stdout.queue(SetAttribute(Attribute::Reverse))?;
         }
-
         let checked = if is_selected { "[x]" } else { "[ ]" };
+        let theme = get_theme();
         let checkbox_color = if is_selected {
-            Color::Green
+            theme.checkbox_selected
         } else {
-            Color::DarkGrey
+            theme.checkbox_unselected
         };
 
         stdout.queue(SetForegroundColor(checkbox_color))?;
-        stdout.queue(Print(format!("{} ", checked)))?;
+        stdout.queue(Print(checked))?;
+        if is_cursor {
+            // Stop reverse before the trailing space so the space is not highlighted
+            stdout.queue(SetAttribute(Attribute::Reset))?;
+        }
+        stdout.queue(Print(" "))?;
 
         let name_color = if is_selected {
-            Color::Cyan
+            theme.item_selected_text
         } else {
-            Color::White
+            theme.item_unselected_text
         };
         stdout.queue(SetForegroundColor(name_color))?;
         stdout.queue(Print(format!(
@@ -341,7 +348,8 @@ impl SelectionState {
             self.items.len()
         );
         stdout.queue(MoveTo(0, (layout.rows_visible + 3) as u16))?;
-        stdout.queue(SetForegroundColor(Color::Blue))?;
+        let theme = get_theme();
+        stdout.queue(SetForegroundColor(theme.footer))?;
         stdout.queue(Print(status))?;
         stdout.queue(ResetColor)?;
         Ok(())

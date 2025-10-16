@@ -14,13 +14,17 @@ use tokio::runtime::Runtime;
 
 use app::App;
 use cli::{Cli, Commands};
-use ui::print_success;
+use ui::{configure_theme, print_success};
 
 fn main() -> Result<()> {
     let cli = Cli::parse();
     let cache_dir = cli
         .cache_dir
         .unwrap_or_else(|| dirs::cache_dir().unwrap_or_else(|| PathBuf::from(".lightignore")));
+
+    // Configure theme early using environment/terminal hints
+    let detected = ui::theme::detect_theme_kind_from_env();
+    configure_theme(detected);
 
     let app = App::new(cache_dir)?;
     let rt = Runtime::new()?;

@@ -1028,6 +1028,7 @@ dependencies = [
  "crossterm",
  "dirs",
  "futures",
+ "once_cell",
  "reqwest",
  "self_update",
  "serde",

@@ -1,7 +1,8 @@
+use crate::ui::theme::get_theme;
 use anyhow::Result;
 use crossterm::{
     QueueableCommand,
-    style::{Attribute, Color, Print, ResetColor, SetAttribute, SetForegroundColor},
+    style::{Attribute, Print, ResetColor, SetAttribute, SetForegroundColor},
 };
 use std::cmp::max;
 use std::io::{self, Write};
@@ -38,11 +39,12 @@ pub fn print_columnar_list(items: &[String], layout: &ColumnLayout) -> Result<()
                 break;
             }
 
-            // Alternate colors for better readability
+            // Alternate subtle contrast for readability in light and dark themes
+            let theme = get_theme();
             let color = if idx % 2 == 0 {
-                Color::Cyan
+                theme.list_alt1
             } else {
-                Color::Green
+                theme.list_alt2
             };
 
             let item_text = format!("{:<width$}", items[idx], width = layout.column_width);
@@ -71,11 +73,12 @@ pub fn print_columnar_list(items: &[String], layout: &ColumnLayout) -> Result<()
 
 pub fn print_success(message: &str) -> Result<()> {
     let mut stdout = io::stdout();
-    stdout.queue(SetForegroundColor(Color::Green))?;
+    let theme = get_theme();
+    stdout.queue(SetForegroundColor(theme.success))?;
     stdout.queue(SetAttribute(Attribute::Bold))?;
     stdout.queue(Print("✓ "))?;
     stdout.queue(SetAttribute(Attribute::Reset))?;
-    stdout.queue(SetForegroundColor(Color::Green))?;
+    stdout.queue(SetForegroundColor(theme.success))?;
     stdout.queue(Print(message))?;
     stdout.queue(ResetColor)?;
     writeln!(stdout)?;
