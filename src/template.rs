@@ -64,7 +64,10 @@ impl TemplateIndex {
     pub fn read(cache_dir: &PathBuf) -> Result<Self> {
         let index_path = cache_dir.join("index.json");
         if !index_path.exists() {
-            anyhow::bail!("index not found. Please run `lignore update` first");
+            anyhow::bail!(
+                "Cache not found at {}. Run `lignore update` or `lignore generate` to download templates.",
+                cache_dir.display()
+            );
         }
         let data = fs::read(index_path)?;
         let templates: BTreeMap<String, String> = serde_json::from_slice(&data)?;

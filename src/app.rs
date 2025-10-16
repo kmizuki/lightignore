@@ -270,6 +270,20 @@ impl App {
         TemplateIndex::read(&self.cache_dir)
     }
 
+    /// Read index from cache, or automatically update cache if it doesn't exist
+    pub fn read_index_or_update(&self, rt: &tokio::runtime::Runtime) -> Result<TemplateIndex> {
+        match self.read_index() {
+            Ok(index) => Ok(index),
+            Err(_) => {
+                println!("No cache found. Downloading templates for the first time...");
+                println!(
+                    "(This is a one-time setup and will be much faster with parallel downloads)\n"
+                );
+                rt.block_on(self.update_cache())
+            }
+        }
+    }
+
     pub fn list_templates(&self, index: &TemplateIndex) -> Result<()> {
         let items = index.list();
         if items.is_empty() {

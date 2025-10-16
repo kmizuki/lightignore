@@ -31,11 +31,11 @@ fn main() -> Result<()> {
             print_success("Cache updated")?;
         }
         Commands::List => {
-            let index = app.read_index()?;
+            let index = app.read_index_or_update(&rt)?;
             app.list_templates(&index)?;
         }
         Commands::Generate { output } => {
-            let index = app.read_index()?;
+            let index = app.read_index_or_update(&rt)?;
             let output_path = output.unwrap_or_else(|| PathBuf::from(".gitignore"));
             app.generate_interactive(&index, output_path)?;
         }
