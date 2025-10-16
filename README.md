@@ -5,12 +5,12 @@
 <p align="center">
   <!-- <a href="https://github.com/kmizuki/lightignore/releases"><img src="https://img.shields.io/github/v/release/kmizuki/lightignore?style=flat&logo=github" alt="GitHub release"></a> -->
   <!-- <a href="https://github.com/kmizuki/lightignore/actions/workflows/release.yml"><img src="https://github.com/kmizuki/lightignore/actions/workflows/release.yml/badge.svg?branch=main" alt="build status"></a> -->
-  <a href="https://www.rust-lang.org"><img src="https://img.shields.io/badge/rust-1.70+-orange.svg?style=flat&logo=rust" alt="Rust version"></a>
+  <a href="https://www.rust-lang.org"><img src="https://img.shields.io/badge/rust-1.80+-orange.svg?style=flat&logo=rust" alt="Rust version"></a>
   <a href="https://github.com/kmizuki/lightignore/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat" alt="license"></a>
 </p>
 <br/>
 
-# lightignore
+# Lightignore
 
 Lightning-fast, interactive .gitignore generator
 
@@ -30,7 +30,7 @@ Lightning-fast, interactive .gitignore generator
 ### Using curl (Recommended)
 
 ```bash
-curl -LsSf https://github.com/kmizuki/lightignore/releases/download/0.1.0/lightignore-installer.sh | sh
+curl -LsSf https://github.com/kmizuki/lightignore/releases/download/v0.1.1/lightignore-installer.sh | sh
 ```
 
 ### From source
