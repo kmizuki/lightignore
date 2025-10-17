@@ -318,7 +318,13 @@ impl App {
         let previous_selection = build_previous_selection(&options, &config);
 
         // Interactive selection
-        let selected = select_templates(&all_options, &previous_selection)?;
+        let selected = match select_templates(&all_options, &previous_selection)? {
+            Some(selection) => selection,
+            None => {
+                println!("Selection cancelled.");
+                return Ok(());
+            }
+        };
         if selected.is_empty() {
             println!("No templates selected.");
             return Ok(());
