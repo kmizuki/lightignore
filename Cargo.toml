@@ -1,6 +1,6 @@
 [package]
 name = "lightignore"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2024"
 authors = ["kmizuki"]
 license = "MIT"
@@ -18,15 +18,20 @@ path = "src/main.rs"
 [dependencies]
 anyhow = "1"
 clap = { version = "4", features = ["derive"] }
-reqwest = { version = "0.12", features = ["json", "gzip"] }
-serde = { version = "1", features = ["derive"] }
-serde_json = "1"
-tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
-dirs = "6"
 crossterm = "0.29"
-self_update = { version = "0.42", features = ["archive-tar", "compression-flate2"] }
+dirs = "6"
+flate2 = "1"
 futures = "0.3"
 once_cell = "1"
+reqwest = { version = "0.12", features = ["json", "gzip"] }
+self_update = { version = "0.42", features = ["archive-tar", "compression-flate2"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tar = "0.4"
+tempfile = "3"
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+xz2 = "0.1"
+zip = { version = "0.6", default-features = false, features = ["deflate"] }
 
 # The profile that 'dist' will build with
 [profile.dist]

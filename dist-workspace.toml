@@ -16,6 +16,8 @@ targets = [
     "aarch64-apple-darwin",
     "x86_64-pc-windows-msvc",
 ]
+# Force unix archives to use gzip so the self-updater can extract them
+unix-archive = ".tar.gz"
 # Which actions to run on pull requests
 pr-run-mode = "plan"
 # Whether to install an updater program

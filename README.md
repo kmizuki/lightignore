@@ -30,7 +30,7 @@ Lightning-fast, interactive .gitignore generator
 ### Using curl (Recommended)
 
 ```bash
-curl -LsSf https://github.com/kmizuki/lightignore/releases/download/v0.2.0/lightignore-installer.sh | sh
+curl -LsSf https://github.com/kmizuki/lightignore/releases/download/latest/lightignore-installer.sh | sh
 ```
 
 ### From source
